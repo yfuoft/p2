@@ -1,0 +1,32 @@
+---
+title: 'Optimism: An Excuse for Inaccurate Economic Policy'
+author: "Yousuf Farhan"
+date: "2/17/2022"
+output: pdf_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+library(tidyverse)
+library(ggplot2)
+library(janitor)
+```
+
+# Introduction
+
+Effective monetary policy requires the use of accurate forecasting. However, statistical evidence seems to demonstrate that these two phenomenon are related in more than just one causal manner. Inaccurate forecasting, even if used to increase consumer confidence, seems to create catastrophic long-term results.
+
+```{r cars}
+c1 <- readxl::read_excel("./data/tableC1_bw.xlsx", "data")
+c1
+```
+
+## Including Plots
+
+You can also embed plots, for example:
+
+```{r pressure, echo=FALSE}
+plot(pressure)
+```
+
+Note that the `echo = FALSE` parameter was added to the code chunk to prevent printing of the R code that generated the plot.

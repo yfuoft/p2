@@ -1,3 +1,8 @@
+install.packages("haven")
+install.packages("sf")
+install.packages("backports")
 install.packages("tidyverse")
 install.packages("sf")
 install.packages("janitor")
+install.packages("ggplot2")
+tinytex::install_tinytex()
