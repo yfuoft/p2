@@ -64,51 +64,68 @@ Here are visualizations for their forecast errors for one and three year terms r
 ```{r}
 
 data_bw |>
-  ggplot(mapping = aes(x = year, y = yr1_fe)) +
+  ggplot(mapping = aes(x = year, y = yr1_fe, color = yr1_fe)) +
   geom_point()+
-  theme_classic()+
+  theme_minimal()+
   labs(
     x = "Year",
     y = "Forecast Error",
+    color = "One-Year Forecast Error",
     caption = "Forecast error using equation (1) "
-  )
-
+  ) 
 
 
 ```
 ```{r}
 data_bw |>
-  ggplot(mapping = aes(x = year, y = yr3_fe)) +
+  ggplot(mapping = aes(x = year, y = yr3_fe, color = yr3_fe)) +
   geom_point()+
   theme_classic()+
   labs(
     x = "Year",
     y = "Forecast Error",
+    color = "Three-Year Forecast Error",
+
     caption = "Forecast error using equation (1) "
   )
 
 
 ```
+Both of these demonstrate how this method becomes even more inaccurate over longer time periods. 
 
+Furthermore, the pre-reported inaccurate false optimism isn't  even considered, so the interdependence of the two is not evaluated. 
 
-## How Beaudry and Willems' (2021) mistake can be rectified
+Their approach does not compare the most relevant variables, and produces an inaccurate result which exaggerates reality. In the following section, it is described how this reproduction of Beaudry and Willems (2021) asks the same question, yet uses a better methodology to produce more accurate results.
 
-Lets take a look at the following two graphs.
+The following diagram maps these two forecasts against the actual Real Gross Domestic Product per capita growth achieved in these respective years.
+
 ```{r}
-
 data_bw |>
-  filter(country == "United States") |>
-  ggplot(mapping = aes(x = year, y = rgdp_gr)) +
-  geom_line()+
+  ggplot(mapping = aes(x= year)) +
+  geom_line(aes(y = rgdp_gr, color = "Real GDP Growth Rate"))+
+  geom_line(aes( y = yr1_fe, color = "One-year forecast error")) +
+  geom_line(aes( y = yr3_fe, color = "Three-year forecast error"))+
+  
   theme_classic()+
   labs(
     x = "Year",
-    y = "Real GDP Growth Rate",
-    caption = "United States' Real GDP Growth Rate. Source is in the data folder."
+    y = "Forecast Error",
+    color = "Legend",
+
+    caption = "Forecast error using equation (1) "
   )
 
+
 ```
-#  Citations
+By excluding outliers when it comes to the value of real Gross Domestic Product, we get a more relevant visual:
+## How Beaudry and Willems' (2021) mistake can be rectified; How to make this reproduction more accurate
+
+Lets take a look at the following equation used by Beaudry and Willem's (2021):
+
+$E_{cht} = (1/h)()$
+
+
+# Citations
 
 Beaudry, Paul, and Franck Portier. 2004. "An Exploration into Pigou's Theory of Cycles." Journal of Monetary Economics 51 (6): 1183--1216. Beaudry, Paul, and Tim Willems. 2022. "On the Macroeconomic Consequences of Over-Optimism." American Economic Journal: Macroeconomics, 14 (1): 38-59.
 
