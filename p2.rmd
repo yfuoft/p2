@@ -102,9 +102,9 @@ The following diagram maps these two forecasts against the actual Real Gross Dom
 ```{r}
 data_bw |>
   ggplot(mapping = aes(x= year)) +
-  geom_line(aes(y = rgdp_gr, color = "Real GDP Growth Rate"))+
-  geom_line(aes( y = yr1_fe, color = "One-year forecast error")) +
-  geom_line(aes( y = yr3_fe, color = "Three-year forecast error"))+
+  geom_point(aes(y = rgdp_gr, color = "Real GDP Growth Rate"))+
+  geom_point(aes( y = yr1_fe, color = "One-year forecast error")) +
+  geom_point(aes( y = yr3_fe, color = "Three-year forecast error"))+
   
   theme_classic()+
   labs(
@@ -117,7 +117,29 @@ data_bw |>
 
 
 ```
-By excluding outliers when it comes to the value of real Gross Domestic Product, we get a more relevant visual:
+Developing countries almost always have very unpredictable, and usually very high real Gross Domestic Product per capita growth rates. To make visualization easier, the following graph excludes countries with a real Gross Domestic Product per capita of under five thousand dollars.
+
+```{r}
+
+adjusted_data_bw <- data_bw %>%
+  select(year, yr1_fe, yr3_fe, rgdp_gr, rgdpch) %>%
+    filter(between(rgdpch, 5000,9999999999))
+
+adjusted_data_bw |>
+  ggplot(mapping = aes(x= year)) +
+  geom_point(aes(y = rgdp_gr, color = "Real GDP Growth Rate"))+
+  geom_point(aes( y = yr1_fe, color = "One-year forecast error")) +
+  geom_point(aes( y = yr3_fe, color = "Three-year forecast error"))+
+  
+  theme_classic()+
+  labs(
+    x = "Year",
+    y = "Forecast Error",
+    color = "Legend",
+
+    caption = "Forecast error using equation (1) "
+  )
+```
 ## How Beaudry and Willems' (2021) mistake can be rectified; How to make this reproduction more accurate
 
 Lets take a look at the following equation used by Beaudry and Willem's (2021):
