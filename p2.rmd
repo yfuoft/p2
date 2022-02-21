@@ -2,7 +2,12 @@
 title: 'Excessive Optimism: A Precursor for Inaccurate Economic Policy'
 author: "Yousuf Farhan"
 date: "2/17/2022"
-output: pdf_document
+output:
+  pdf_document: 
+    toc: yes
+    fig_caption: yes
+  html_document:
+    df_print: paged
 ---
 
 ```{r setup, include=FALSE}
@@ -10,46 +15,103 @@ knitr::opts_chunk$set(echo = TRUE)
 library(tidyverse)
 library(ggplot2)
 library(janitor)
+library(datasauRus)
+library(haven)
+library(patchwork)
 ```
 
-# Abstract
-Inaccurate forecasting, even if used to increase consumer confidence, seems to create catastrophic long-term results. By analyzing once-booming economies which experienced such catastrophes based on data provided by the IMF, we reach a conclusion that verifies just that; disproportionate, positive economic expectations are a precursor to economic collapse. Baseless yet optimistic forecasts made by private entities tend to yield similar results; overt optimism in forecasts may or may not facilitate short-term booms, but they do wreck long-term havoc. 
+```{=tex}
+\begin{centering}
 
+{\bf Abstract}
+\\
 
+Inaccurate forecasting, even if used to increase consumer confidence, seems to create catastrophic long-term results. By analyzing once-booming economies which experienced such catastrophes based on data provided by the IMF, we reach a conclusion that verifies just that; disproportionate, positive economic expectations are a precursor to economic collapse. Baseless yet optimistic forecasts made by private entities tend to yield similar results; overt optimism in forecasts may or may not facilitate short-term booms, but they do tend to wreck long-term havoc. 
+
+\end{centering}
+```
 # Introduction
 
-Effective monetary policy requires the use of accurate forecasting. However, statistical evidence seems to demonstrate that these two phenomenon are related in more than just one causal manner (Pigou 1927).  By comparing forecasted and actual real Gross Domestic Product growth ratesm this hypothesis can be put to the test. 
-
-
-
+Effective monetary policy requires the use of accurate forecasting. However, statistical evidence seems to demonstrate that these two phenomenon are related in more than just one causal manner (Pigou 1927). By comparing forecasted and actual real Gross Domestic Product growth rates and exploring their causal relationship, this hypothesis can be put to the test. While Beaudry and Willems (2021) do an excellent job at testing this hypothesis, their conclusion are derived from the somewhat inaccurate model that presupposes post-inaccurate excessive optimism for the long-term results they conclude are caused. This convoluted phenomenon is described in sufficient detail later in this paper.
 
 ```{r, include=FALSE}
 c1 <- readxl::read_excel("./data/tableC1_bw.xlsx", "data")
-c1
+
+data_bw <- read_dta("data/data_bw.dta")
+
 ```
-
-
-
 
 # What the data shows
 
-The IMF produces bi-annual economic reports for all member countries (IMF 1990–2018) which is inclusive of data from similar research bodies. What makes this source of data unique is that it covers 189 states, making it possible to create cumulative reports based on the global economy and establish trends backed by an enormous amount of data.
+The IMF produces bi-annual economic reports for all member countries (IMF 1990--2018) which is inclusive of data from similar research bodies. What makes this source of data unique is that it covers 189 states, making it possible to create cumulative reports based on the global economy and establish trends backed by an enormous amount of data.
 
 ## A Cycle of Deception
 
+![The MC Error Cycle (Beaudry, Paul and Tim Willems. 2022)](images/MC-Error-Cycle.png)
 
-## Bad Forecasts and their Results
+Baseless optimism leads to increased consumer confidence. This leads to increase debt accumulation. These two phenomenon create a positive feedback loop, often resulting in short-term economic gains.
 
-To measure forecasting errors, we will subtract the predicted annual real GDP growth and the actual annual real GDP growth rate for every year and for periods of up to four years.
+## What makes Beaudry and Willems (2021) Almost Accurate
+
+To measure forecasting errors, we will subtract the predicted annual real GDP growth and the actual annual real GDP growth rate for every year and for periods of up to four years. The IMF predicts Gross Domestic Product growth rates over one, two, three and four year periods.The equation used in Beadry and Willems (2002) uses the following equation to calculate for their "subtract the actual from the predicted" approach:
+
+$F_{cht} = (1/h) ( \sum_{j=1}^h (g_{c,t+j|t}^f - g_{c,t+j})) (1)$
+
+where c is the country, j the time period and t the year. The predicted growth is represented by $g_{c,t+f|t}$. The actual growth by $g_{c,t+f|t}^f$. The sum of their difference is divided by the number of periods they cover. While this is an interesting concept, it has one major flaw; **it calculates mean precision of h prior time periods worth of forecasts.**
+
+Here are visualizations for their forecast errors for one and three year terms respectively from the years 1990 to 2016:
+
+```{r}
+
+data_bw |>
+  ggplot(mapping = aes(x = year, y = yr1_fe)) +
+  geom_point()+
+  theme_classic()+
+  labs(
+    x = "Year",
+    y = "Forecast Error",
+    caption = "Forecast error using equation (1) "
+  )
 
 
 
+```
+```{r}
+data_bw |>
+  ggplot(mapping = aes(x = year, y = yr3_fe)) +
+  geom_point()+
+  theme_classic()+
+  labs(
+    x = "Year",
+    y = "Forecast Error",
+    caption = "Forecast error using equation (1) "
+  )
 
 
+```
 
 
+## How Beaudry and Willems' (2021) mistake can be rectified
 
-# Citations
-Beaudry, Paul, and Franck Portier. 2004. “An Exploration into Pigou’s Theory of Cycles.” Journal of
-Monetary Economics 51 (6): 1183–1216.
-Beaudry, Paul, and Tim Willems. 2022. "On the Macroeconomic Consequences of Over-Optimism." American Economic Journal: Macroeconomics, 14 (1): 38-59.
+Lets take a look at the following two graphs.
+```{r}
+
+data_bw |>
+  filter(country == "United States") |>
+  ggplot(mapping = aes(x = year, y = rgdp_gr)) +
+  geom_line()+
+  theme_classic()+
+  labs(
+    x = "Year",
+    y = "Real GDP Growth Rate",
+    caption = "United States' Real GDP Growth Rate. Source is in the data folder."
+  )
+
+```
+#  Citations
+
+Beaudry, Paul, and Franck Portier. 2004. "An Exploration into Pigou's Theory of Cycles." Journal of Monetary Economics 51 (6): 1183--1216. Beaudry, Paul, and Tim Willems. 2022. "On the Macroeconomic Consequences of Over-Optimism." American Economic Journal: Macroeconomics, 14 (1): 38-59.
+
+# Links
+
+DOI: "<https://www.socialsciencereproduction.org/reproductions/936ea80f-8424-4d77-a098-00a12b7c9f94/index>" Github: "<https://github.com/yfuoft/p2.git>"
