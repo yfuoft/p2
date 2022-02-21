@@ -1,5 +1,5 @@
 ---
-title: 'Optimism: An Excuse for Inaccurate Economic Policy'
+title: 'Excessive Optimism: A Precursor for Inaccurate Economic Policy'
 author: "Yousuf Farhan"
 date: "2/17/2022"
 output: pdf_document
@@ -12,21 +12,44 @@ library(ggplot2)
 library(janitor)
 ```
 
+# Abstract
+Inaccurate forecasting, even if used to increase consumer confidence, seems to create catastrophic long-term results. By analyzing once-booming economies which experienced such catastrophes based on data provided by the IMF, we reach a conclusion that verifies just that; disproportionate, positive economic expectations are a precursor to economic collapse. Baseless yet optimistic forecasts made by private entities tend to yield similar results; overt optimism in forecasts may or may not facilitate short-term booms, but they do wreck long-term havoc. 
+
+
 # Introduction
 
-Effective monetary policy requires the use of accurate forecasting. However, statistical evidence seems to demonstrate that these two phenomenon are related in more than just one causal manner. Inaccurate forecasting, even if used to increase consumer confidence, seems to create catastrophic long-term results.
+Effective monetary policy requires the use of accurate forecasting. However, statistical evidence seems to demonstrate that these two phenomenon are related in more than just one causal manner (Pigou 1927).  By comparing forecasted and actual real Gross Domestic Product growth ratesm this hypothesis can be put to the test. 
 
-```{r cars}
+
+
+
+```{r, include=FALSE}
 c1 <- readxl::read_excel("./data/tableC1_bw.xlsx", "data")
 c1
 ```
 
-## Including Plots
 
-You can also embed plots, for example:
 
-```{r pressure, echo=FALSE}
-plot(pressure)
-```
 
-Note that the `echo = FALSE` parameter was added to the code chunk to prevent printing of the R code that generated the plot.
+# What the data shows
+
+The IMF produces bi-annual economic reports for all member countries (IMF 1990–2018) which is inclusive of data from similar research bodies. What makes this source of data unique is that it covers 189 states, making it possible to create cumulative reports based on the global economy and establish trends backed by an enormous amount of data.
+
+## A Cycle of Deception
+
+
+## Bad Forecasts and their Results
+
+To measure forecasting errors, we will subtract the predicted annual real GDP growth and the actual annual real GDP growth rate for every year and for periods of up to four years.
+
+
+
+
+
+
+
+
+# Citations
+Beaudry, Paul, and Franck Portier. 2004. “An Exploration into Pigou’s Theory of Cycles.” Journal of
+Monetary Economics 51 (6): 1183–1216.
+Beaudry, Paul, and Tim Willems. 2022. "On the Macroeconomic Consequences of Over-Optimism." American Economic Journal: Macroeconomics, 14 (1): 38-59.
