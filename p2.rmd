@@ -117,13 +117,15 @@ data_bw |>
 
 
 ```
-Developing countries almost always have very unpredictable, and usually very high real Gross Domestic Product per capita growth rates. To make visualization easier, the following graph excludes countries with a real Gross Domestic Product per capita of under five thousand dollars.
+Developing countries almost always have very unpredictable, and usually very high real Gross Domestic Product per capita growth rates (Blomstrom, M., Lipsey, R.E. and Zejan, M., 1994.)
+
+To make visualization easier, the following graph excludes countries with a real Gross Domestic Product per capita of under twenty-five thousand dollars.
 
 ```{r}
 
 adjusted_data_bw <- data_bw %>%
   select(year, yr1_fe, yr3_fe, rgdp_gr, rgdpch) %>%
-    filter(between(rgdpch, 5000,9999999999))
+    filter(between(rgdpch, 25000,9999999999))
 
 adjusted_data_bw |>
   ggplot(mapping = aes(x= year)) +
@@ -144,12 +146,23 @@ adjusted_data_bw |>
 
 Lets take a look at the following equation used by Beaudry and Willem's (2021):
 
-$E_{cht} = (1/h)()$
+$E_{cht} = (1/h)(\sum_{j=1}^h (g_{c,t - j + 1} - g_{c.t - j + 1|t - h}^f ))$
+
+Simplying for average growth over h years for country c:
+
+$(1/h)(\sum_{j=1}^h e_{c,t - j +1|t -h})$
 
 
 # Citations
 
-Beaudry, Paul, and Franck Portier. 2004. "An Exploration into Pigou's Theory of Cycles." Journal of Monetary Economics 51 (6): 1183--1216. Beaudry, Paul, and Tim Willems. 2022. "On the Macroeconomic Consequences of Over-Optimism." American Economic Journal: Macroeconomics, 14 (1): 38-59.
+Beaudry, Paul, and Franck Portier. 2004. "An Exploration into Pigou's Theory of Cycles." Journal of Monetary Economics 51 (6): 1183--1216. 
+
+Beaudry, Paul, and Tim Willems. 2022. "On the Macroeconomic Consequences of Over-Optimism." American Economic Journal: Macroeconomics, 14 (1): 38-59.
+
+Blomstrom, M., Lipsey, R.E. and Zejan, M., 1994. What explains the growth of developing countries?. Convergence of productivity: Cross-national studies and historical evidence, pp.243-259.
+
+SAIS Bologna Center, Johns Hopkins University. christopher.gilbert@jhu.edu . Comment dated 19
+January 2022.
 
 # Links
 
