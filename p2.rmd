@@ -17,7 +17,9 @@ library(ggplot2)
 library(janitor)
 library(datasauRus)
 library(haven)
+library(stringr)
 library(patchwork)
+
 ```
 
 ```{=tex}
@@ -49,7 +51,7 @@ The IMF produces bi-annual economic reports for all member countries (IMF 1990--
 
 ![The MC Error Cycle (Beaudry, Paul and Tim Willems. 2022)](images/MC-Error-Cycle.png)
 
-Baseless optimism leads to increased consumer confidence. This leads to increase debt accumulation. These two phenomenon create a positive feedback loop, often resulting in short-term economic gains.
+Baseless optimism leads to increased consumer confidence. This leads to increase debt accumulation. These two phenomenon create a positive feedback loop, often resulting in short-term economic gains. The latter makes economies less resilient in the long-term.
 
 ## What makes Beaudry and Willems (2021) Almost Accurate
 
@@ -123,11 +125,11 @@ To make visualization easier, the following graph excludes countries with a real
 
 ```{r}
 
-adjusted_data_bw <- data_bw %>%
+adjusted_data_bw_developed <- data_bw %>%
   select(year, yr1_fe, yr3_fe, rgdp_gr, rgdpch) %>%
     filter(between(rgdpch, 25000,9999999999))
 
-adjusted_data_bw |>
+adjusted_data_bw_developed |>
   ggplot(mapping = aes(x= year)) +
   geom_point(aes(y = rgdp_gr, color = "Real GDP Growth Rate"))+
   geom_point(aes( y = yr1_fe, color = "One-year forecast error")) +
@@ -142,15 +144,57 @@ adjusted_data_bw |>
     caption = "Forecast error using equation (1) "
   )
 ```
+This scatterplot is exclusively for countries with a real Gross Domestic Product of under twenty-five thousand dollars:
+```{r}
+
+adjusted_data_bw_developing <- data_bw %>%
+  select(year, yr1_fe, yr3_fe, rgdp_gr, rgdpch) %>%
+    filter(between(rgdpch, 0,25000))
+
+adjusted_data_bw_developing |>
+  ggplot(mapping = aes(x= year)) +
+  geom_point(aes(y = rgdp_gr, color = "Real GDP Growth Rate"))+
+  geom_point(aes( y = yr1_fe, color = "One-year forecast error")) +
+  geom_point(aes( y = yr3_fe, color = "Three-year forecast error"))+
+  
+  theme_classic()+
+  labs(
+    x = "Year",
+    y = "Forecast Error",
+    color = "Legend",
+
+    caption = "Forecast error using equation (1) "
+  )
+```
+
 ## How Beaudry and Willems' (2021) mistake can be rectified; How to make this reproduction more accurate
 
 Lets take a look at the following equation used by Beaudry and Willem's (2021):
 
 $E_{cht} = (1/h)(\sum_{j=1}^h (g_{c,t - j + 1} - g_{c.t - j + 1|t - h}^f ))$
 
-Simplying for average growth over h years for country c:
+Simplifying for average growth over h years for country c, we get:
 
 $(1/h)(\sum_{j=1}^h e_{c,t - j +1|t -h})$
+
+Since the premise of this reproduction is improving accuracy, we replace comparing the averages of forecasting errors with the individual elements of $E_{cht}$.
+
+Using this, the forecasts for one and three year periods can be recomputed.
+
+```{r}
+hist_rgdpgrowth <- read_excel("data/WEOhistorical.xlsx", sheet = "ngdp_rpch")
+prerev_data_bw <- data_bw %>%
+  select(rgdp_gr,yr1_fe,yr3_fe)
+imf_data <- read_excel("data/imf-dm.xls", sheet = "NGDP_RPCH")
+imf_data_diff <- read_excel("data/WEOhistorical.xlsx", sheet = "bca_gdp_bp6")
+processed_imf_data_stage1 <- imf_data[2:48]
+processed_imf_data_stage2 <- as.data.frame(t(processed_imf_data_stage1))
+null_entries_processed_imf_data_stage2 <- processed_imf_data_stage2 %>%
+  count("no data")
+
+length(imf_data_diff)
+```
+
 
 
 # Citations
@@ -163,6 +207,8 @@ Blomstrom, M., Lipsey, R.E. and Zejan, M., 1994. What explains the growth of dev
 
 SAIS Bologna Center, Johns Hopkins University. christopher.gilbert@jhu.edu . Comment dated 19
 January 2022.
+
+
 
 # Links
 
