@@ -37,7 +37,7 @@ Inaccurate forecasting, even if used to increase consumer confidence, seems to c
 \end{centering}
 ```
 # Introduction
-
+The R language [@R-base] is used, in addition to a variety of packages and scholarly sources. Please refer to the References section or the "references.bib" file in the Github repository for more information.
 Effective monetary policy requires the use of accurate forecasting. However, statistical evidence seems to demonstrate that these two phenomenon are related in more than just one causal manner (Pigou 1927). By comparing forecasted and actual real Gross Domestic Product growth rates and exploring their causal relationship, this hypothesis can be put to the test. While Beaudry and Willems (2021) do an excellent job at testing this hypothesis, their conclusion are derived from the somewhat inaccurate model that presupposes post-inaccurate excessive optimism for the long-term results they conclude are caused. This convoluted phenomenon is described in sufficient detail later in this paper.
 
 ```{r, include=FALSE}
