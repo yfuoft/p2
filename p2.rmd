@@ -2,12 +2,11 @@
 title: 'Excessive Optimism: A Precursor for Inaccurate Economic Policy'
 author: "Yousuf Farhan"
 date: "2/17/2022"
-output:
-  pdf_document: 
-    toc: yes
-    fig_caption: yes
-  html_document:
-    df_print: paged
+toc: TRUE
+bibliography: references.bib 
+output: 
+   bookdown::pdf_document2:
+      latex_engine: xelatex
 ---
 
 ```{r setup, include=FALSE}
@@ -19,16 +18,20 @@ library(datasauRus)
 library(haven)
 library(stringr)
 library(patchwork)
-
+library(readxl)
+library(rstudioapi)
+library(bookdown)
+library(bibtex)
 ```
 
 ```{=tex}
+
 \begin{centering}
 
 {\bf Abstract}
 \\
 
-Inaccurate forecasting, even if used to increase consumer confidence, seems to create catastrophic long-term results. By analyzing once-booming economies which experienced such catastrophes based on data provided by the IMF, we reach a conclusion that verifies just that; disproportionate, positive economic expectations are a precursor to economic collapse. Baseless yet optimistic forecasts made by private entities tend to yield similar results; overt optimism in forecasts may or may not facilitate short-term booms, but they do tend to wreck long-term havoc. 
+Inaccurate forecasting, even if used to increase consumer confidence, seems to create catastrophic long-term results. By analyzing once-booming economies which experienced such catastrophes based on data provided by the IMF, we reach a conclusion that verifies just that; disproportionate, positive economic expectations are a precursor to economic collapse. Baseless yet optimistic forecasts made by private entities tend to yield similar results; overt optimism in forecasts may or may not facilitate short-term booms, but they do tend to wreck long-term havoc. This reproduction analyzes Beaudry and Willem's (2021), however, a notable observation is also made. A minor critique of their formula to calculate aggregates leads us to recomputing these values, which show their results to be slightly exaggerated, but their point is still applicable.
 
 \end{centering}
 ```
@@ -52,6 +55,7 @@ The IMF produces bi-annual economic reports for all member countries (IMF 1990--
 ![The MC Error Cycle (Beaudry, Paul and Tim Willems. 2022)](images/MC-Error-Cycle.png)
 
 Baseless optimism leads to increased consumer confidence. This leads to increase debt accumulation. These two phenomenon create a positive feedback loop, often resulting in short-term economic gains. The latter makes economies less resilient in the long-term.
+# Discussion
 
 ## What makes Beaudry and Willems (2021) Almost Accurate
 
@@ -63,7 +67,7 @@ where c is the country, j the time period and t the year. The predicted growth i
 
 Here are visualizations for their forecast errors for one and three year terms respectively from the years 1990 to 2016:
 
-```{r}
+```{r , echo=FALSE, warning=FALSE}
 
 data_bw |>
   ggplot(mapping = aes(x = year, y = yr1_fe, color = yr1_fe)) +
@@ -78,7 +82,7 @@ data_bw |>
 
 
 ```
-```{r}
+```{r, echo=FALSE, warning=FALSE}
 data_bw |>
   ggplot(mapping = aes(x = year, y = yr3_fe, color = yr3_fe)) +
   geom_point()+
@@ -101,7 +105,7 @@ Their approach does not compare the most relevant variables, and produces an ina
 
 The following diagram maps these two forecasts against the actual Real Gross Domestic Product per capita growth achieved in these respective years.
 
-```{r}
+```{r, echo=FALSE, warning=FALSE}
 data_bw |>
   ggplot(mapping = aes(x= year)) +
   geom_point(aes(y = rgdp_gr, color = "Real GDP Growth Rate"))+
@@ -123,7 +127,7 @@ Developing countries almost always have very unpredictable, and usually very hig
 
 To make visualization easier, the following graph excludes countries with a real Gross Domestic Product per capita of under twenty-five thousand dollars.
 
-```{r}
+```{r, echo=FALSE, warning=FALSE}
 
 adjusted_data_bw_developed <- data_bw %>%
   select(year, yr1_fe, yr3_fe, rgdp_gr, rgdpch) %>%
@@ -145,7 +149,7 @@ adjusted_data_bw_developed |>
   )
 ```
 This scatterplot is exclusively for countries with a real Gross Domestic Product of under twenty-five thousand dollars:
-```{r}
+```{r, echo=FALSE, warning=FALSE}
 
 adjusted_data_bw_developing <- data_bw %>%
   select(year, yr1_fe, yr3_fe, rgdp_gr, rgdpch) %>%
@@ -175,14 +179,16 @@ $E_{cht} = (1/h)(\sum_{j=1}^h (g_{c,t - j + 1} - g_{c.t - j + 1|t - h}^f ))$
 
 Simplifying for average growth over h years for country c, we get:
 
-$(1/h)(\sum_{j=1}^h e_{c,t - j +1|t -h})$
+$(1/h)(\sum_{j=1}^h e_{c,t - j +1|t - h})$
 
-Since the premise of this reproduction is improving accuracy, we replace comparing the averages of forecasting errors with the individual elements of $E_{cht}$.
-
+Since the premise of this reproduction is improving accuracy, we replace comparing the averages of forecasting errors with the individual elements of $E_{cht}$, which reduces forecast errors by splitting them into two components. These components consist of growth rate $g_{c,t-k}^-$. 
 Using this, the forecasts for one and three year periods can be recomputed.
 
-```{r}
-hist_rgdpgrowth <- read_excel("data/WEOhistorical.xlsx", sheet = "ngdp_rpch")
+
+# Results
+```{r, echo=FALSE, warning=FALSE}
+hist_rgdpgrowth <- readxl::read_excel(path = "data/WEOhistorical.xlsx",sheet=3)
+  #read_excel("data/WEOhistorical.xlsx", sheet = "ngdp_rpch")
 prerev_data_bw <- data_bw %>%
   select(rgdp_gr,yr1_fe,yr3_fe)
 imf_data <- read_excel("data/imf-dm.xls", sheet = "NGDP_RPCH")
@@ -191,25 +197,88 @@ processed_imf_data_stage1 <- imf_data[2:48]
 processed_imf_data_stage2 <- as.data.frame(t(processed_imf_data_stage1))
 null_entries_processed_imf_data_stage2 <- processed_imf_data_stage2 %>%
   count("no data")
+imf_data_diff_stage1 <- imf_data_diff[4:69]
+agg_vec <- na.omit(imf_data_diff_stage1)
+imf_data_diff_stage1 |>
+  ggplot(mapping = aes(x= year)) +
+  geom_point(aes(y = total, color = "Forecasting Error"))+
+  #ylim(c(0,100))+
 
-length(imf_data_diff)
+  theme_classic()+
+  labs(
+    x = "Year",
+    y = "Forecast Error",
+    color = "Legend",
+
+    caption = "Forecasting Error Using our new equation (also referenced in a comment cited in the bibliography.) "
+  )
+
+```
+
+This graph shows some outliers with very abnormal values. Lets check the reported frequency of these outliers.
+
+```{r, echo=FALSE, warning=FALSE}
+total_vec <- c(imf_data_diff_stage1$total)
+total_vec_table <- table(cut(total_vec, breaks=seq(0, 20,1), ordered_result = TRUE))
+hist(total_vec_table,
+     col = c("cadetblue3","aquamarine3","antiquewhite3"),
+     main = "Frequency of average differences
+     from the Historical World Economic Outlook Database",
+     xlab = "Percentage Difference Ranges",
+    )
+
+```
+Therefore, we can recreate the graph and exclude percentages over 100 for a more accurate scatterplot.
+```{r, echo=FALSE, warning=FALSE}
+imf_data_diff_stage1 |>
+  ggplot(mapping = aes(x= year)) +
+  geom_point(aes(y = total, color = total))+
+  ylim(c(0,50))+
+
+  theme_classic()+
+  labs(
+    x = "Year",
+    y = "Forecast Error",
+    color = "Legend",
+
+    caption = "Forecasting Error Using our new equation (also referenced in a comment cited in the bibliography.) "
+  )
+```
+
+The average percentage discrepancy in the original paper is $-2.386024$. However, our formula brings it down slightly:
+
+```{r, echo=FALSE, warning=FALSE}
+mean(total_vec, na.rm = TRUE) 
+```
+
+```{r, echo=FALSE, warning=FALSE}
+
+#toBibtex(citation("tidyverse"))
+#toBibtex(citation("knitr"))
+#toBibtex(citation("janitor"))
+#toBibtex(citation("ggplot2"))
+#toBibtex(citation("datasauRus"))
+#toBibtex(citation("stringr"))
+#toBibtex(citation("patchwork"))
+#knitr::write_bib(c( "base","bookdown","knitr", "rmarkdown","ggplot2","tidyverse","datasauRus", "stringr", "patchwork","haven", "rstudioapi","bibtex"), width = 60, #file = "references.bib")
+
+
 ```
 
 
 
-# Citations
 
-Beaudry, Paul, and Franck Portier. 2004. "An Exploration into Pigou's Theory of Cycles." Journal of Monetary Economics 51 (6): 1183--1216. 
 
-Beaudry, Paul, and Tim Willems. 2022. "On the Macroeconomic Consequences of Over-Optimism." American Economic Journal: Macroeconomics, 14 (1): 38-59.
 
-Blomstrom, M., Lipsey, R.E. and Zejan, M., 1994. What explains the growth of developing countries?. Convergence of productivity: Cross-national studies and historical evidence, pp.243-259.
-
-SAIS Bologna Center, Johns Hopkins University. christopher.gilbert@jhu.edu . Comment dated 19
-January 2022.
 
 
 
 # Links
 
-DOI: "<https://www.socialsciencereproduction.org/reproductions/936ea80f-8424-4d77-a098-00a12b7c9f94/index>" Github: "<https://github.com/yfuoft/p2.git>"
+DOI: "<https://www.socialsciencereproduction.org/reproductions/936ea80f-8424-4d77-a098-00a12b7c9f94/index>"
+
+Github: "<https://github.com/yfuoft/p2.git>"
+
+# References
+
+
