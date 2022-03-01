@@ -21,6 +21,7 @@ library(patchwork)
 library(readxl)
 library(rstudioapi)
 library(bookdown)
+library(magrittr)
 library(bibtex)
 ```
 
@@ -260,25 +261,24 @@ mean(total_vec, na.rm = TRUE)
 #toBibtex(citation("datasauRus"))
 #toBibtex(citation("stringr"))
 #toBibtex(citation("patchwork"))
-#knitr::write_bib(c( "base","bookdown","knitr", "rmarkdown","ggplot2","tidyverse","datasauRus", "stringr", "patchwork","haven", "rstudioapi","bibtex"), width = 60, #file = "references.bib")
+#knitr::write_bib(c( "base","bookdown","knitr", #"rmarkdown","ggplot2","tidyverse","datasauRus", "stringr", "patchwork","haven", #"rstudioapi","bibtex","magrittr"), width = 60, file = "references.bib")
 
 
 ```
 
+\newpage
 
 
+# References
 
+```{r, echo=FALSE, warning=FALSE}
+df2 <- "references.bib" %>%
+  RefManageR::ReadBib() 
+df2
 
-
-
-
-
+```
 # Links
 
 DOI: "<https://www.socialsciencereproduction.org/reproductions/936ea80f-8424-4d77-a098-00a12b7c9f94/index>"
 
 Github: "<https://github.com/yfuoft/p2.git>"
-
-# References
-
-
